@@ -65,14 +65,54 @@ const booksDatabase = [
         pdfUrl: "https://drive.google.com/file/d/152cHhUDF8HMVy1TKPZAn7MOucY55th0e/view?usp=drive_link",
         cover: "book"
     },
+     {
+        id: 9,
+        title: "Harry Potter y la camara secreta",
+        author: "J. K. Rowling,",
+        year: 1998,
+        pdfUrl: "https://drive.google.com/file/d/13BuhWI8iIq8A5UC0m_bjsR8YU2vkMoAJ/view?usp=drive_link",
+        cover: "book"
+    },
     {
         id: 10,
-        title: "Pedro Páramo",
-        author: "Juan Rulfo",
-        year: 1955,
-        pdfUrl: "https://example.com/pedro-paramo.pdf",
+        title: "Harry Potter y el prisionero de azkaban",
+        author: "J. K. Rowling,",
+        year: 1999,
+        pdfUrl: "https://drive.google.com/file/d/133W4mOV0qGIW8InP1FX6qYCJiy8phL1y/view?usp=drive_link",
         cover: "book"
-    }
+    },
+    {
+        id: 11,
+        title: "Harry Potter y el misterio del principe",
+        author: "J. K. Rowling,",
+        year: 2005,
+        pdfUrl: "https://drive.google.com/file/d/1RF-SfHAP5BKiJuaLLe4IsnmDAyc8VIxD/view?usp=drive_link",
+        cover: "book"
+    },
+    {
+        id: 12,
+        title: "Harry Potter y el caliz de fuego",
+        author: "J. K. Rowling,",
+        year: 2000,
+        pdfUrl: "https://drive.google.com/file/d/1FCD03ofOSxPx5c0Q0rpj5n2LXz53t15H/view?usp=drive_link",
+        cover: "book"
+    },
+    {
+        id: 13,
+        title: "Harry Potter y las reliquias de la muerte",
+        author: "J. K. Rowling,",
+        year: 2007,
+        pdfUrl: "https://drive.google.com/file/d/1xW7QuN354Sagwh-N8zCxj1yC0NbM2Sg5/view?usp=drive_link",
+        cover: "book"
+    },
+    {
+        id: 14,
+        title: "Harry Potter y la orden del fenix",
+        author: "J. K. Rowling,",
+        year: 2003,
+        pdfUrl: "https://drive.google.com/file/d/1YRJSHCyknRjsdnJVbFQb2MgjP09yMtaC/view?usp=drive_link",
+        cover: "book"
+    },
 ];
 
 // Elementos del DOM
