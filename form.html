@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Código para Biblioteca</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .buttons {
+            margin: 20px 0;
+        }
+        .book-list {
+            margin-top: 30px;
+        }
+        .book-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3498db;
+        }
+        .book-item h3 {
+            margin-top: 0;
+        }
+        .book-actions {
+            margin-top: 10px;
+        }
+        .book-actions button {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .edit-btn {
+            background-color: #f39c12;
+        }
+        .edit-btn:hover {
+            background-color: #e67e22;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        #codeOutput {
+            width: 100%;
+            height: 300px;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f8f8f8;
+            margin-top: 20px;
+            white-space: pre;
+            overflow: auto;
+        }
+        .instructions {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Generador de Código para Biblioteca</h1>
+        
+        <div class="instructions">
+            <h3>Instrucciones:</h3>
+            <p>1. Completa el formulario para agregar libros a la biblioteca.</p>
+            <p>2. Genera el código cuando hayas terminado de agregar todos los libros.</p>
+            <p>3. Copia el código generado y reemplaza el array <code>booksDatabase</code> en tu archivo <code>script.js</code>.</p>
+        </div>
+        
+        <form id="bookForm">
+            <div class="form-group">
+                <label for="title">Título:</label>
+                <input type="text" id="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="author">Autor:</label>
+                <input type="text" id="author" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="year">Año de publicación:</label>
+                <input type="number" id="year" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="pdfUrl">URL del PDF:</label>
+                <input type="url" id="pdfUrl" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="cover">Ícono de portada:</label>
+                <select id="cover">
+                    <option value="book">Libro</option>
+                    <option value="book-open">Libro abierto</option>
+                    <option value="scroll">Pergamino</option>
+                    <option value="file-pdf">Archivo PDF</option>
+                </select>
+            </div>
+            
+            <div class="buttons">
+                <button type="submit" id="addBookBtn">Agregar Libro</button>
+                <button type="button" id="generateCodeBtn">Generar Código</button>
+                <button type="button" id="clearListBtn">Limpiar Lista</button>
+            </div>
+        </form>
+        
+        <div class="book-list" id="bookList"></div>
+        
+        <h3>Código generado:</h3>
+        <textarea id="codeOutput" readonly></textarea>
+    </div>
+
+    <script>
+        // Array para almacenar los libros
+        let booksDatabase = [];
+        let currentEditId = null;
+
+        // Elementos del DOM
+        const bookForm = document.getElementById('bookForm');
+        const bookList = document.getElementById('bookList');
+        const codeOutput = document.getElementById('codeOutput');
+        const addBookBtn = document.getElementById('addBookBtn');
+        const generateCodeBtn = document.getElementById('generateCodeBtn');
+        const clearListBtn = document.getElementById('clearListBtn');
+
+        // Agregar o editar libro
+        bookForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const year = parseInt(document.getElementById('year').value);
+            const pdfUrl = document.getElementById('pdfUrl').value;
+            const cover = document.getElementById('cover').value;
+            
+            if (currentEditId !== null) {
+                // Editar libro existente
+                const index = booksDatabase.findIndex(book => book.id === currentEditId);
+                if (index !== -1) {
+                    booksDatabase[index] = { id: currentEditId, title, author, year, pdfUrl, cover };
+                }
+                currentEditId = null;
+                addBookBtn.textContent = 'Agregar Libro';
+            } else {
+                // Agregar nuevo libro
+                const id = booksDatabase.length > 0 ? Math.max(...booksDatabase.map(book => book.id)) + 1 : 1;
+                booksDatabase.push({ id, title, author, year, pdfUrl, cover });
+            }
+            
+            updateBookList();
+            bookForm.reset();
+        });
+
+        // Generar código JavaScript
+        generateCodeBtn.addEventListener('click', function() {
+            if (booksDatabase.length === 0) {
+                codeOutput.value = '// No hay libros agregados';
+                return;
+            }
+            
+            let code = 'const booksDatabase = [\n';
+            
+            booksDatabase.forEach(book => {
+                code += `    {
+        id: ${book.id},
+        title: "${book.title}",
+        author: "${book.author}",
+        year: ${book.year},
+        pdfUrl: "${book.pdfUrl}",
+        cover: "${book.cover}"
+    },\n`;
+            });
+            
+            code += '];';
+            
+            codeOutput.value = code;
+        });
+
+        // Limpiar lista
+        clearListBtn.addEventListener('click', function() {
+            if (booksDatabase.length > 0 && confirm('¿Estás seguro de que deseas limpiar la lista de libros?')) {
+                booksDatabase = [];
+                updateBookList();
+                codeOutput.value = '';
+            }
+        });
+
+        // Actualizar la lista visual de libros
+        function updateBookList() {
+            bookList.innerHTML = '';
+            
+            if (booksDatabase.length === 0) {
+                bookList.innerHTML = '<p>No hay libros agregados.</p>';
+                return;
+            }
+            
+            booksDatabase.forEach(book => {
+                const bookItem = document.createElement('div');
+                bookItem.className = 'book-item';
+                bookItem.innerHTML = `
+                    <h3>${book.title}</h3>
+                    <p><strong>Autor:</strong> ${book.author}</p>
+                    <p><strong>Año:</strong> ${book.year}</p>
+                    <p><strong>PDF:</strong> ${book.pdfUrl}</p>
+                    <p><strong>Ícono:</strong> ${book.cover}</p>
+                    <div class="book-actions">
+                        <button class="edit-btn" data-id="${book.id}">Editar</button>
+                        <button class="delete-btn" data-id="${book.id}">Eliminar</button>
+                    </div>
+                `;
+                
+                bookList.appendChild(bookItem);
+            });
+            
+            // Agregar event listeners a los botones de editar
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    editBook(id);
+                });
+            });
+            
+            // Agregar event listeners a los botones de eliminar
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    deleteBook(id);
+                });
+            });
+        }
+
+        // Editar libro
+        function editBook(id) {
+            const book = booksDatabase.find(book => book.id === id);
+            if (book) {
+                document.getElementById('title').value = book.title;
+                document.getElementById('author').value = book.author;
+                document.getElementById('year').value = book.year;
+                document.getElementById('pdfUrl').value = book.pdfUrl;
+                document.getElementById('cover').value = book.cover;
+                
+                currentEditId = id;
+                addBookBtn.textContent = 'Guardar Cambios';
+            }
+        }
+
+        // Eliminar libro
+        function deleteBook(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este libro?')) {
+                booksDatabase = booksDatabase.filter(book => book.id !== id);
+                updateBookList();
+            }
+        }
+
+        // Inicializar
+        updateBookList();
+    </script>
+</body>
+</html>
